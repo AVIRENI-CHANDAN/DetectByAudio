@@ -1,0 +1,27 @@
+# Sound files
+*.wav
+
+# Environment folders
+env/
+venv/
+.env/
+.venv/
+
+# Environment files
+.env
+.flaskenv
+
+# Cache
+**/__pycache__/**
+**/.pytest_cache/**
+**/*.pyc
+**/.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Database files
+**/*.db
+**/*.sqlite
+**/*.sqlite3
