@@ -135,6 +135,3 @@ Configuration options are available in `util.py`:
 - **OpenCV** for handling video capture and rendering.
 - **Numpy, Sounddevice, Soundfile** for audio processing and handling.
 
-```
-
-```
