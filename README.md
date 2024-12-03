@@ -8,7 +8,7 @@ The Object Detection App leverages OpenCV and YOLO (You Only Look Once) for real
 
 ## Features
 
-- Real-time object detection using YOLO (YOLOv4 Tiny).
+- Real-time object detection using YOLO.
 - Customizable class names for object detection.
 - Voice command recognition to identify and highlight specific objects.
 - GUI with a clickable button to start audio recording.
@@ -19,11 +19,9 @@ The Object Detection App leverages OpenCV and YOLO (You Only Look Once) for real
 ```plaintext
 ├── main.py                   # Entry point to run the application
 ├── application.py            # Core application logic and class-based implementation
+├── requirements.txt          # File that contains all the required packages for application
 ├── util.py                   # Configuration constants and utility classes
-├── classes.txt               # File containing class names for detected objects
 ├── Config/                   # Directory for YOLO model files
-│   ├── yolov4-tiny.weights   # YOLO weights file
-│   └── yolov4-tiny.cfg       # YOLO configuration file
 └── README.md                 # Project documentation
 ```
 
@@ -38,6 +36,7 @@ The Object Detection App leverages OpenCV and YOLO (You Only Look Once) for real
   - `speechrecognition`
   - `scipy`
   - `pyaudio`
+  - `ultralytics`
 
 ## Setup
 
@@ -130,11 +129,7 @@ Configuration options are available in `util.py`:
 
 ## Acknowledgments
 
-- **YOLOv4 Tiny** for efficient real-time object detection.
+- **YOLO** for efficient real-time object detection.
 - **Google Speech Recognition API** for speech-to-text functionality.
 - **OpenCV** for handling video capture and rendering.
 - **Numpy, Sounddevice, Soundfile** for audio processing and handling.
-
-```
-
-```
