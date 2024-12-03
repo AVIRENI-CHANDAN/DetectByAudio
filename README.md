@@ -48,9 +48,6 @@ The Object Detection App leverages OpenCV and YOLO (You Only Look Once) for real
    pip install -r requirements.txt
    ```
 
-2. **Prepare YOLO Files**:
-   Place the `yolov4-tiny.weights` and `yolov4-tiny.cfg` files in the `Config` directory, or modify paths in `util.py` if they are located elsewhere.
-
 ## Usage
 
 1. **Run the App**:
@@ -63,8 +60,61 @@ The Object Detection App leverages OpenCV and YOLO (You Only Look Once) for real
 2. **Interact with the Application**:
 
    - The webcam feed will display in a window named "Frame".
-   - **Recording a Command**: Click inside the red "Record" button on the top left of the window to record audio.
-   - **Highlighting Objects**: Speak the name of an object you want to highlight (e.g., "person", "car"). Detected objects matching the spoken command will be highlighted with a red rectangle.
+   - **Recording a Command**: Click inside the red box which can be seen all over the screen with red border. This will start the audio recording.
+   - **Highlighting Objects**: Speak the name of an object you want to highlight (e.g., "person", "car", "cat", "dog", "motorcycle", "truck"). Detected objects matching the spoken command will be highlighted with a red rectangle in the visible region of the camera.
+   - **Detectable objects**: The application currently supports the following objects:
+
+   ```
+     person
+     bicycle
+     car
+     motorcycle
+     truck
+     boat
+     traffic light
+     fire hydrant
+     stop sign
+     bird
+     cat
+     dog
+     horse
+     sheep
+     cow
+     elephant
+     bear
+     zebra
+     giraffe
+     umbrella
+     bottle
+     cup
+     fork
+     knife
+     spoon
+     bowl
+     banana
+     apple
+     sandwich
+     orange
+     broccoli
+     carrot
+     cake
+     chair
+     bed
+     dining table
+     toilet
+     laptop
+     mouse
+     keyboard
+     cell phone
+     microwave
+     refrigerator
+     book
+     clock
+     vase
+     scissors
+     hair drier
+     toothbrush
+   ```
 
 3. **Exit**:
    - Press `q` to exit the application.
@@ -84,3 +134,7 @@ Configuration options are available in `util.py`:
 - **Google Speech Recognition API** for speech-to-text functionality.
 - **OpenCV** for handling video capture and rendering.
 - **Numpy, Sounddevice, Soundfile** for audio processing and handling.
+
+```
+
+```
