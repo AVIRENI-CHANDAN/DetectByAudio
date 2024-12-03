@@ -5,14 +5,18 @@ class RecordBoxBoudaries:
     y_end = 710
 
 
-class YoloConfigFiles:
-    WEIGHTS_FILE = "Config/yolov4-tiny.weights"
-    CONFIG_FILE = "Config/yolov4-tiny.cfg"
+class YoloModels:
+    MODEL = "Config/yolo11s.pt"
 
 
 class VideoCaptureWindowDimensions:
     WIDTH = 1280
     HEIGHT = 720
+
+
+class CommandTextPosition:
+    x = 20
+    y = 700
 
 
 class AudioRecordConfiguration:

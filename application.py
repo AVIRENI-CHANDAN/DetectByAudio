@@ -4,23 +4,23 @@ import sounddevice as sd
 import soundfile as sf
 import speech_recognition as sr
 from scipy.io.wavfile import write
+from ultralytics import YOLO
+
 from util import (
-    RecordBoxBoudaries,
-    YoloConfigFiles,
-    VideoCaptureWindowDimensions,
     AudioRecordConfiguration,
+    CommandTextPosition,
+    RecordBoxBoudaries,
+    VideoCaptureWindowDimensions,
+    YoloModels,
 )
 
 
 class ObjectDetectionApp:
     def __init__(self):
-        self.net = cv2.dnn.readNet(
-            YoloConfigFiles.WEIGHTS_FILE, YoloConfigFiles.CONFIG_FILE
-        )
-        self.model = cv2.dnn_DetectionModel(self.net)
-        self.model.setInputParams(size=(416, 416), scale=1 / 255)
+        # Initialize YOLOv8 model
+        self.model = YOLO(YoloModels.MODEL)
 
-        self.classes_names = self.read_class_names()
+        self.classes_names = self.model.names
 
         self.set_video_capture_dimension(0)
 
@@ -39,12 +39,6 @@ class ObjectDetectionApp:
         self.cap = cv2.VideoCapture(video_capture_mode)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, VideoCaptureWindowDimensions.WIDTH)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, VideoCaptureWindowDimensions.HEIGHT)
-
-    def read_class_names(self):
-        classes = []
-        with open("classes.txt", "r") as classes_file:
-            classes = [class_name.strip() for class_name in classes_file.readlines()]
-        return classes
 
     def record_audio_by_mouse_click(self, event, x, y, flags, params):
         if event == cv2.EVENT_LBUTTONDOWN:
@@ -67,15 +61,13 @@ class ObjectDetectionApp:
         myrecording = sd.rec(
             int(self.seconds * self.fs), samplerate=self.fs, channels=2
         )
-        sd.wait()  # wait until the recording is finished
-        write(self.audio_file_name, self.fs, myrecording)  # save the audio file
+        sd.wait()
+        write(self.audio_file_name, self.fs, myrecording)
 
     def get_text_from_audio(self):
-        # Convert the audio file for Google API
         data, samplerate = sf.read(self.audio_file_name)
         sf.write("outputNew.wav", data, samplerate, subtype="PCM_16")
 
-        # Extract text using Speech Recognition
         recognizer = sr.Recognizer()
         try:
             with sr.AudioFile("outputNew.wav") as source:
@@ -93,38 +85,56 @@ class ObjectDetectionApp:
 
     def detect_objects(self):
         while True:
-            # Read frame from the camera
             rtn, frame = self.cap.read()
+            if not rtn:
+                break
 
-            # Detect objects
-            class_ids, scores, bboxes = self.model.detect(frame)
+            results = self.model.predict(frame, stream=True, verbose=False)
+            cv2.putText(
+                frame,
+                f"Recognised text: {self.command}",
+                (CommandTextPosition.x, CommandTextPosition.y),
+                cv2.FONT_HERSHEY_PLAIN,
+                1,
+                (0, 0, 0),
+                2,
+            )
 
-            # Draw detected objects if they match the recognized class
-            for class_id, score, bbox in zip(class_ids, scores, bboxes):
-                x, y, width, height = bbox  # x, y is the left upper corner
-                name = self.classes_names[class_id]
+            # Process detections
+            for result in results:
+                boxes = result.boxes
+                for box in boxes:
+                    # Get box coordinates
+                    x1, y1, x2, y2 = box.xyxy[0]
+                    x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
 
-                # Look for the recognized class name
-                if self.button_clicked and self.command.find(name) > 0:
-                    cv2.rectangle(
-                        frame, (x, y), (x + width, y + height), (130, 50, 50), 3
-                    )
-                    cv2.putText(
-                        frame,
-                        name,
-                        (x, y - 10),
-                        cv2.FONT_HERSHEY_COMPLEX,
-                        1,
-                        (120, 50, 50),
-                        2,
-                    )
+                    # Get class name and confidence
+                    class_id = int(box.cls[0])
+                    name = self.classes_names[class_id]
+                    # Draw detection if it matches the recognized command
+                    if (
+                        self.button_clicked
+                        and self.command.lower().find(name.lower()) >= 0
+                    ):
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (50, 50, 200), 3)
+                        conf = float(box.conf[0])
+
+                        cv2.putText(
+                            frame,
+                            f"{name} {conf:.2f}",
+                            (x1, y1 - 10),
+                            cv2.FONT_HERSHEY_COMPLEX,
+                            1,
+                            (50, 50, 220),
+                            2,
+                        )
 
             # Draw the "Record" button
             cv2.rectangle(
                 frame,
                 (RecordBoxBoudaries.x_start, RecordBoxBoudaries.y_start),
                 (RecordBoxBoudaries.x_end, RecordBoxBoudaries.y_end),
-                (153, 0, 0),
+                (0, 0, 153),
                 0,
             )
             cv2.putText(

@@ -25,3 +25,11 @@ venv/
 **/*.db
 **/*.sqlite
 **/*.sqlite3
+
+# Yolov8 file
+Config/yolo*.pt
+
+# Application files
+classes.txt
+output.wav
+outputNew.wav
